@@ -12,3 +12,8 @@ Services required to run wayland on gnome:
 
 Force wayland:
 - ln -s /dev/null /etc/udev/rules.d/61-gdm.rules
+
+# Explanation
+nvidia.hook goes to /etc/pacman.d/hooks/ so that everytime there's an update to the nvidia driver, it updates the initramfs
+arch.conf goes to /boot/loader/entries/ (self explanatory)
+install-stuff.sh is my script that installs my essential apps on Fedora or Arch
