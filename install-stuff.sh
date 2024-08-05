@@ -164,7 +164,6 @@ askForge(){
 
 checkEnv
 askPackages
-askUfw
 askForge
 
 echo "Finished job"
