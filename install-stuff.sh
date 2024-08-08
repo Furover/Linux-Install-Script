@@ -1,4 +1,5 @@
 MANAGER=""
+FIRSTINSTALL=false
 goBack=$(pwd)
 echo "Make sure you're running this on the folder of this repository"
 echo "Directory: ${goBack}"
@@ -43,7 +44,28 @@ askPackages(){
 
 	# Check the user's response
 	if [[ "$packageresponse" == "yes" || "$packageresponse" == "y" ]]; then
+
 	    if [[ "$MANAGER" == "pacman" ]]; then
+
+			read -p "Install desktop environment and other stuff (First Arch install)?: " archresponse
+
+			archresponse=$(echo "$archresponse" | tr '[:upper:]' '[:lower:]')
+
+			if [[ "$archresponse" == "yes" || "$archresponse" == "y" ]]; then
+
+			    FIRSTINSTALL=true
+			    sudo ${MANAGER} --noconfirm -Sy wayland xorg-xwayland pipewire pipewire-pulse wireplumber
+				sudo ${MANAGER} -S xorg-server xorg-apps
+				sudo ${MANAGER} -S gnome gnome-tweaks power-profiles-daemon
+				sudo modprobe nvidia NVreg_PreserveVideoMemoryAllocations=1
+				sudo systemctl enable nvidia-{suspend,resume,hibernate}
+				ln -s /dev/null /etc/udev/rules.d/61-gdm.rules
+				sudo systemctl enable gdm
+				echo "Finished, make sure the file /etc/modprobe.d/nvidia.conf exists..."
+			else
+                echo "Continuing without installing base packages..."
+			fi
+
             if ! command_exists yay; then
                 echo "Installing yay as AUR helper..."
                 sudo ${MANAGER} -S base-devel
@@ -53,7 +75,9 @@ askPackages(){
             else
                 echo "AUR helper already installed"
             fi
-            sudo ${MANAGER} -Sy ufw networkmanager-openvpn gnome-tweaks nextcloud-client firefox-developer-edition gimp inkscape lutris steam tilix scrcpy obs-studio android-tools code libreoffice-fresh v4l2loopback-dkms celluloid lollypop audacity clamtk firejail btop fastfetch gnome-shell-extension-caffeine gnome-shell-extension-weather-oclock gnome-shell-extension-appindicator
+
+            flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+            sudo ${MANAGER} -Sy ufw fzf zoxide networkmanager-openvpn gnome-tweaks nextcloud-client firefox-developer-edition gimp inkscape lutris steam tilix scrcpy obs-studio android-tools code libreoffice-fresh v4l2loopback-dkms celluloid lollypop audacity clamtk firejail btop fastfetch gnome-shell-extension-caffeine gnome-shell-extension-weather-oclock gnome-shell-extension-appindicator
             sudo ${MANAGER} -Rcuns totem gnome-contacts gnome-console evince gnome-tour simple-scan snapshot gnome-maps gnome-music
             yay -S portmaster-stub-bin
             sudo ${MANAGER} --noconfirm -S sushi unzip
@@ -96,7 +120,7 @@ askPackages(){
                 lib32-libxcomposite ocl-icd lib32-ocl-icd libva lib32-libva gtk3 lib32-gtk3 gst-plugins-base-libs \
                 lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader sdl2 lib32-sdl2
             else
-                echo "Continuing without installing lutris stuff"
+                echo "Continuing without installing lutris stuff..."
             fi
 
             read -p "Do ya want virtual machines?: " virtualresponse
@@ -106,15 +130,45 @@ askPackages(){
            	if [[ "$virtualresponse" == "yes" || "$virtualresponse" == "y" ]]; then
                 sudo ${MANAGER} --noconfirm -S qemu-full
             else
-                echo "Continuing without installing vm stuff"
+                echo "Continuing without installing vm stuff..."
             fi
 
         fi
 
         if [[ "$MANAGER" == "dnf" ]]; then
+
+            read -p "Install nvidia drivers? (enable rpm fusion repositories): " nvidiaresponse
+
+			nvidiaresponse=$(echo "$nvidiaresponse" | tr '[:upper:]' '[:lower:]')
+
+			if [[ "$nvidiaresponse" == "yes" || "$nvidiaresponse" == "y" ]]; then
+
+			    FIRSTINSTALL=true
+			    sudo ${MANAGER} in akmod-nvidia
+				sudo ${MANAGER} in xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-power
+				sudo systemctl enable nvidia-{suspend,resume,hibernate}
+
+				read -p "Use secure boot?: " secureresponse
+
+                secureresponse=$(echo "$secureresponse" | tr '[:upper:]' '[:lower:]')
+
+                if [[ "$secureresponse" == "yes" || "$secureresponse" == "y" ]]; then
+
+                    sudo ${MANAGER} in kmodtool akmods mokutil openssl
+                    sudo kmodgenca -a
+                    sudo mokutil --import /etc/pki/akmods/certs/public_key.der
+
+                else
+                    echo "Continuing without configuring secure boot..."
+                fi
+
+            else
+                echo "Continuing without installing nvidia drivers..."
+			fi
+
             flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
             sudo ${MANAGER} copr enable zeno/scrcpy
-            sudo ${MANAGER} in ufw unzip sushi gnome-tweaks nextcloud-client gimp inkscape lutris steam tilix scrcpy obs-studio celluloid lollypop audacity clamtk btop fastfetch flatseal wine-core wine-core.i686 firejail gnome-shell-extension-caffeine gnome-shell-extension-unite gnome-shell-extension-appindicator gnome-shell-extension-forge gnome-shell-extension-just-perfection gnome-shell-extension-dash-to-dock
+            sudo ${MANAGER} in ufw fzf zoxide unzip sushi gnome-tweaks nextcloud-client gimp inkscape lutris steam tilix scrcpy obs-studio celluloid lollypop audacity clamtk btop fastfetch flatseal wine-core wine-core.i686 firejail gnome-shell-extension-caffeine gnome-shell-extension-unite gnome-shell-extension-appindicator gnome-shell-extension-forge gnome-shell-extension-just-perfection gnome-shell-extension-dash-to-dock
             sudo ${MANAGER} rm firewalld totem gnome-contacts evince gnome-tour simple-scan snapshot gnome-maps
             flatpak install flathub com.spotify.Client dev.vencord.Vesktop com.github.finefindus.eyedropper io.github.seadve.Mousai net.davidotek.pupgui2 io.itch.itch com.brave.Browser io.gitlab.librewolf-community org.mozilla.Thunderbird net.nokyan.Resources
 
@@ -141,13 +195,13 @@ askPackages(){
            	if [[ "$virtualresponse" == "yes" || "$virtualresponse" == "y" ]]; then
                 sudo ${MANAGER} in @Virtualization
             else
-                echo "Continuing without installing vm stuff"
+                echo "Continuing without installing vm stuff..."
             fi
 
         fi
 
     else
-        echo "Continuing without installing packages"
+        echo "Continuing without installing packages..."
 	fi
 }
 
@@ -163,7 +217,7 @@ askForge(){
 		gsettings set org.gnome.mutter focus-change-on-pointer-rest false #changes focus on hover instantly
 		gsettings set org.gnome.desktop.wm.preferences button-layout : #removes all buttons from the top
 	else
-		echo "Continuing without changing settings for forge."
+		echo "Continuing without changing settings for forge..."
 	fi
 }
 
@@ -200,7 +254,7 @@ askTheme(){
 		cp ${goBack}/Desktop/{com.github.finefindus.eyedropper.desktop,dev.vencord.Vesktop.desktop,io.github.seadve.Mousai.desktop,io.itch.itch.desktop,net.nokyan.Resources.desktop,portmaster.desktop,net.davidotek.pupgui2.desktop} ~/.local/share/applications/
 		cd ${goBack}
 	else
-		echo "Continuing without installing gtk theme."
+		echo "Continuing without installing gtk theme..."
 	fi
 }
 
@@ -241,4 +295,7 @@ askForge
 askTheme
 askStarship
 
-echo "Finished job"
+echo "Finished job."
+if [[ "$FIRSTINSTALL" == true ]]; then
+    echo "You may now reboot your pc."
+fi
