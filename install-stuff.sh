@@ -5,6 +5,7 @@ command_exists() {
 }
 
 checkEnv() {
+    cd ~
     ## Check for requirements.
     REQUIREMENTS='curl groups sudo'
     for req in $REQUIREMENTS; do
@@ -45,7 +46,7 @@ askPackages(){
                 sudo ${MANAGER} -S base-devel
                 mkdir -p ~/Repositories/Tools
                 cd ~/Repositories/Tools && git clone https://aur.archlinux.org/yay-git.git
-                cd yay-git && makepkg --noconfirm -si
+                cd yay-git && makepkg --noconfirm -si && cd ~
             else
                 echo "AUR helper already installed"
             fi
@@ -53,7 +54,7 @@ askPackages(){
             sudo ${MANAGER} -Rcuns totem gnome-contacts gnome-console evince gnome-tour simple-scan snapshot gnome-maps gnome-music
             yay -S portmaster-stub-bin
             sudo ${MANAGER} --noconfirm -S sushi
-            flatpak install flathub com.spotify.Client dev.vencord.Vesktop com.github.finefindus.eyedropper io.github.seadve.Mousai com.vscodium.codium com.github.tchx84.Flatseal net.davidotek.pupgui2 io.itch.itch com.brave.Browser io.gitlab.librewolf-community org.mozilla.Thunderbird
+            flatpak install flathub com.spotify.Client dev.vencord.Vesktop com.github.finefindus.eyedropper io.github.seadve.Mousai com.vscodium.codium com.github.tchx84.Flatseal net.davidotek.pupgui2 io.itch.itch com.brave.Browser io.gitlab.librewolf-community org.mozilla.Thunderbird net.nokyan.Resources
 
             #This changes nautilus to the default file manager, I don't know why, but whenever I install codium, it changes this
             xdg-mime default org.gnome.Nautilus.desktop inode/directory application/x-gnome-saved-search
@@ -112,7 +113,7 @@ askPackages(){
             sudo ${MANAGER} copr enable zeno/scrcpy
             sudo ${MANAGER} in ufw sushi gnome-tweaks nextcloud-client gimp inkscape lutris steam tilix scrcpy obs-studio celluloid lollypop audacity clamtk btop fastfetch flatseal wine-core wine-core.i686 firejail gnome-shell-extension-caffeine gnome-shell-extension-unite gnome-shell-extension-appindicator gnome-shell-extension-forge gnome-shell-extension-just-perfection gnome-shell-extension-dash-to-dock
             sudo ${MANAGER} rm firewalld totem gnome-contacts evince gnome-tour simple-scan snapshot gnome-maps
-            flatpak install flathub com.spotify.Client dev.vencord.Vesktop com.github.finefindus.eyedropper io.github.seadve.Mousai net.davidotek.pupgui2 io.itch.itch com.brave.Browser io.gitlab.librewolf-community org.mozilla.Thunderbird
+            flatpak install flathub com.spotify.Client dev.vencord.Vesktop com.github.finefindus.eyedropper io.github.seadve.Mousai net.davidotek.pupgui2 io.itch.itch com.brave.Browser io.gitlab.librewolf-community org.mozilla.Thunderbird net.nokyan.Resources
 
             while true; do
                 read -p "Install flatpak or $MANAGER version of Firefox?(f/d): " firefoxresponse
@@ -147,7 +148,7 @@ askPackages(){
 }
 
 askForge(){
-	read -p "Are you using/going to use forge?: " forgeresponse
+	read -p "Are you using forge?: " forgeresponse
 
 
 	forgeresponse=$(echo "$forgeresponse" | tr '[:upper:]' '[:lower:]')
@@ -158,12 +159,49 @@ askForge(){
 		gsettings set org.gnome.mutter focus-change-on-pointer-rest false #changes focus on hover instantly
 		gsettings set org.gnome.desktop.wm.preferences button-layout : #removes all buttons from the top
 	else
-		echo "Finishing without changing settings for forge."
+		echo "Continuing without changing settings for forge."
+	fi
+}
+
+askTheme(){
+	read -p "Install Colloid theme?: " themeresponse
+
+
+	themeresponse=$(echo "$themeresponse" | tr '[:upper:]' '[:lower:]')
+
+
+	if [[ "$themeresponse" == "yes" || "$themeresponse" == "y" ]]; then
+		mkdir -p Repositories/Themes
+		cd ~/Repositories/Themes
+		echo "Cloning repositories..."
+		git clone https://github.com/vinceliuice/Colloid-gtk-theme.git
+		git clone https://github.com/vinceliuice/Colloid-icon-theme.git
+		echo "Installing icon theme..."
+		cd Colloid-icon-theme && ./install.sh -t pink && cd ..
+		echo "Installing gtk theme..."
+		cd Colloid-gtk-theme && ./install.sh -t pink -c dark -l --tweaks black --tweaks rimless && cd ..
+		echo "Getting cursor..."
+		wget https://github.com/ful1e5/Bibata_Cursor/releases/download/v2.0.7/Bibata-Modern-Classic.tar.xz
+		tar -xvf Bibata-Modern-Classic.tar.xz && rm -f Bibata-Modern-Classic.tar.xz
+		echo "Pasting cursor into icons directory..."
+		cp -r Bibata-Modern-Classic ~/.local/share/icons/ && rm -rf Bibata-Modern-Classic
+		echo "Setting themes..."
+		gsettings set org.gnome.desktop.interface cursor-theme Bibata-Modern-Classic
+		gsettings set org.gnome.desktop.interface gtk-theme Colloid-Pink-Dark
+		gsettings set org.gnome.desktop.interface icon-theme Colloid-Pink-Dark
+		echo "Copying icons..."
+		cp ~/Pictures/gtk-theme-icons/{eyedropper.svg,itch-app.svg,mousai.svg,notion.svg,portmaster.svg,zed.svg} ~/.local/share/icons/Colloid-Pink-Light/apps/scalable/
+		ln -s ~/.local/share/icons/Colloid-Pink-Light/apps/scalable/discord.svg ~/.local/share/icons/Colloid-Pink-Light/apps/scalable/dev.vencord.Vesktop.svg
+		echo "Copying desktop files..."
+		cp ~/Documents/desktop-bak/{com.github.finefindus.eyedropper.desktop,dev.vencord.Vesktop.desktop,io.github.seadve.Mousai.desktop,io.itch.itch.desktop,net.nokyan.Resources.desktop,portmaster.desktop,net.davidotek.pupgui2.desktop} ~/.local/share/applications/
+	else
+		echo "Finishing without installing gtk theme."
 	fi
 }
 
 checkEnv
 askPackages
 askForge
+askTheme
 
 echo "Finished job"
