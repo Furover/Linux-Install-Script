@@ -56,7 +56,7 @@ askPackages(){
             sudo ${MANAGER} -Sy ufw networkmanager-openvpn gnome-tweaks nextcloud-client firefox-developer-edition gimp inkscape lutris steam tilix scrcpy obs-studio android-tools code libreoffice-fresh v4l2loopback-dkms celluloid lollypop audacity clamtk firejail btop fastfetch gnome-shell-extension-caffeine gnome-shell-extension-weather-oclock gnome-shell-extension-appindicator
             sudo ${MANAGER} -Rcuns totem gnome-contacts gnome-console evince gnome-tour simple-scan snapshot gnome-maps gnome-music
             yay -S portmaster-stub-bin
-            sudo ${MANAGER} --noconfirm -S sushi
+            sudo ${MANAGER} --noconfirm -S sushi unzip
             flatpak install flathub com.spotify.Client dev.vencord.Vesktop com.github.finefindus.eyedropper io.github.seadve.Mousai com.vscodium.codium com.github.tchx84.Flatseal net.davidotek.pupgui2 io.itch.itch com.brave.Browser io.gitlab.librewolf-community org.mozilla.Thunderbird net.nokyan.Resources
 
             #This changes nautilus to the default file manager, I don't know why, but whenever I install codium, it changes this
@@ -108,13 +108,13 @@ askPackages(){
             else
                 echo "Continuing without installing vm stuff"
             fi
-            cd ${goBack}
+
         fi
 
         if [[ "$MANAGER" == "dnf" ]]; then
             flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
             sudo ${MANAGER} copr enable zeno/scrcpy
-            sudo ${MANAGER} in ufw sushi gnome-tweaks nextcloud-client gimp inkscape lutris steam tilix scrcpy obs-studio celluloid lollypop audacity clamtk btop fastfetch flatseal wine-core wine-core.i686 firejail gnome-shell-extension-caffeine gnome-shell-extension-unite gnome-shell-extension-appindicator gnome-shell-extension-forge gnome-shell-extension-just-perfection gnome-shell-extension-dash-to-dock
+            sudo ${MANAGER} in ufw unzip sushi gnome-tweaks nextcloud-client gimp inkscape lutris steam tilix scrcpy obs-studio celluloid lollypop audacity clamtk btop fastfetch flatseal wine-core wine-core.i686 firejail gnome-shell-extension-caffeine gnome-shell-extension-unite gnome-shell-extension-appindicator gnome-shell-extension-forge gnome-shell-extension-just-perfection gnome-shell-extension-dash-to-dock
             sudo ${MANAGER} rm firewalld totem gnome-contacts evince gnome-tour simple-scan snapshot gnome-maps
             flatpak install flathub com.spotify.Client dev.vencord.Vesktop com.github.finefindus.eyedropper io.github.seadve.Mousai net.davidotek.pupgui2 io.itch.itch com.brave.Browser io.gitlab.librewolf-community org.mozilla.Thunderbird net.nokyan.Resources
 
@@ -198,8 +198,40 @@ askTheme(){
 		ln -s ~/.local/share/icons/Colloid-Pink-Light/apps/scalable/discord.svg ~/.local/share/icons/Colloid-Pink-Light/apps/scalable/dev.vencord.Vesktop.svg
 		echo "Copying desktop files..."
 		cp ${goBack}/Desktop/{com.github.finefindus.eyedropper.desktop,dev.vencord.Vesktop.desktop,io.github.seadve.Mousai.desktop,io.itch.itch.desktop,net.nokyan.Resources.desktop,portmaster.desktop,net.davidotek.pupgui2.desktop} ~/.local/share/applications/
+		cd ${goBack}
 	else
-		echo "Finishing without installing gtk theme."
+		echo "Continuing without installing gtk theme."
+	fi
+}
+
+askStarship(){
+    read -p "Install Starship?: " starshipresponse
+
+
+	starshipresponse=$(echo "$starshipresponse" | tr '[:upper:]' '[:lower:]')
+
+
+	if [[ "$starshipresponse" == "yes" || "$starshipresponse" == "y" ]]; then
+	   cd ${goBack}
+	   echo "Getting new fonts..."
+	   wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/RobotoMono.zip
+	   mkdir ~/.local/share/fonts
+	   unzip RobotoMono.zip -d ~/.local/share/fonts
+	   fc-cache -vf
+	   rm -f ~/.local/share/fonts/{LICENSE.txt,README.md}
+	   echo "Changing Fastfetch config..."
+	   mkdir ~/.config/fastfetch
+	   cp ~/.config/fastfetch/config.jsonc Config/fastfetch/config-bak.jsonc
+	   cp -f Config/fastfetch/config.jsonc ~/.config/fastfetch/
+	   echo "Getting starship..."
+	   curl -sS https://starship.rs/install.sh | sh
+	   cp -f Config/starship.toml ~/.config/
+	   echo "Editing .bashrc..."
+	   cp ~/.bashrc .bashrc-bak
+	   cp -f .bashrc ~/
+	   echo "Done, remember to change your monospace font to RobotoMono."
+	else
+		echo "Finishing without installing starship."
 	fi
 }
 
@@ -207,5 +239,6 @@ checkEnv
 askPackages
 askForge
 askTheme
+askStarship
 
 echo "Finished job"
