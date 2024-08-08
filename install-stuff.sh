@@ -49,7 +49,7 @@ askPackages(){
                 sudo ${MANAGER} -S base-devel
                 mkdir -p ~/Repositories/Tools
                 cd ~/Repositories/Tools && git clone https://aur.archlinux.org/yay-git.git
-                cd yay-git && makepkg --noconfirm -si && cd $goBack
+                cd yay-git && makepkg --noconfirm -si && cd ${goBack}
             else
                 echo "AUR helper already installed"
             fi
@@ -108,7 +108,7 @@ askPackages(){
             else
                 echo "Continuing without installing vm stuff"
             fi
-            cd $goBack
+            cd ${goBack}
         fi
 
         if [[ "$MANAGER" == "dnf" ]]; then
@@ -124,6 +124,7 @@ askPackages(){
                	firefoxresponse=$(echo "$firefoxresponse" | tr '[:upper:]' '[:lower:]')
 
                 if [[ "$firefoxresponse" == "f" ]]; then
+		    sudo ${MANAGER} rm firefox
                     flatpak install flathub org.mozilla.firefox
                     break
                 elif [[ "$firefoxresponse" == "d" ]]; then
@@ -193,10 +194,10 @@ askTheme(){
 		gsettings set org.gnome.desktop.interface gtk-theme Colloid-Pink-Dark
 		gsettings set org.gnome.desktop.interface icon-theme Colloid-Pink-Dark
 		echo "Copying icons..."
-		cp $goBack/Icons/{eyedropper.svg,itch-app.svg,mousai.svg,notion.svg,portmaster.svg,zed.svg} ~/.local/share/icons/Colloid-Pink-Light/apps/scalable/
+		cp ${goBack}/Icons/{eyedropper.svg,itch-app.svg,mousai.svg,notion.svg,portmaster.svg,zed.svg} ~/.local/share/icons/Colloid-Pink-Light/apps/scalable/
 		ln -s ~/.local/share/icons/Colloid-Pink-Light/apps/scalable/discord.svg ~/.local/share/icons/Colloid-Pink-Light/apps/scalable/dev.vencord.Vesktop.svg
 		echo "Copying desktop files..."
-		cp $goBack/Desktop/{com.github.finefindus.eyedropper.desktop,dev.vencord.Vesktop.desktop,io.github.seadve.Mousai.desktop,io.itch.itch.desktop,net.nokyan.Resources.desktop,portmaster.desktop,net.davidotek.pupgui2.desktop} ~/.local/share/applications/
+		cp ${goBack}/Desktop/{com.github.finefindus.eyedropper.desktop,dev.vencord.Vesktop.desktop,io.github.seadve.Mousai.desktop,io.itch.itch.desktop,net.nokyan.Resources.desktop,portmaster.desktop,net.davidotek.pupgui2.desktop} ~/.local/share/applications/
 	else
 		echo "Finishing without installing gtk theme."
 	fi
