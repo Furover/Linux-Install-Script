@@ -1,4 +1,7 @@
 MANAGER=""
+goBack=$(pwd)
+echo "Make sure you're running this on the folder of this repository"
+echo "Directory: ${goBack}"
 
 command_exists() {
     command -v "$1" >/dev/null 2>&1
@@ -7,7 +10,7 @@ command_exists() {
 checkEnv() {
     cd ~
     ## Check for requirements.
-    REQUIREMENTS='curl groups sudo'
+    REQUIREMENTS='curl groups sudo git wget'
     for req in $REQUIREMENTS; do
         if ! command_exists "$req"; then
             echo "${RED}To run me, you need: $REQUIREMENTS${RC}"
@@ -46,7 +49,7 @@ askPackages(){
                 sudo ${MANAGER} -S base-devel
                 mkdir -p ~/Repositories/Tools
                 cd ~/Repositories/Tools && git clone https://aur.archlinux.org/yay-git.git
-                cd yay-git && makepkg --noconfirm -si && cd ~
+                cd yay-git && makepkg --noconfirm -si && cd $goBack
             else
                 echo "AUR helper already installed"
             fi
@@ -105,7 +108,7 @@ askPackages(){
             else
                 echo "Continuing without installing vm stuff"
             fi
-
+            cd $goBack
         fi
 
         if [[ "$MANAGER" == "dnf" ]]; then
@@ -190,10 +193,10 @@ askTheme(){
 		gsettings set org.gnome.desktop.interface gtk-theme Colloid-Pink-Dark
 		gsettings set org.gnome.desktop.interface icon-theme Colloid-Pink-Dark
 		echo "Copying icons..."
-		cp ~/Pictures/gtk-theme-icons/{eyedropper.svg,itch-app.svg,mousai.svg,notion.svg,portmaster.svg,zed.svg} ~/.local/share/icons/Colloid-Pink-Light/apps/scalable/
+		cp $goBack/Icons/{eyedropper.svg,itch-app.svg,mousai.svg,notion.svg,portmaster.svg,zed.svg} ~/.local/share/icons/Colloid-Pink-Light/apps/scalable/
 		ln -s ~/.local/share/icons/Colloid-Pink-Light/apps/scalable/discord.svg ~/.local/share/icons/Colloid-Pink-Light/apps/scalable/dev.vencord.Vesktop.svg
 		echo "Copying desktop files..."
-		cp ~/Documents/desktop-bak/{com.github.finefindus.eyedropper.desktop,dev.vencord.Vesktop.desktop,io.github.seadve.Mousai.desktop,io.itch.itch.desktop,net.nokyan.Resources.desktop,portmaster.desktop,net.davidotek.pupgui2.desktop} ~/.local/share/applications/
+		cp $goBack/Desktop/{com.github.finefindus.eyedropper.desktop,dev.vencord.Vesktop.desktop,io.github.seadve.Mousai.desktop,io.itch.itch.desktop,net.nokyan.Resources.desktop,portmaster.desktop,net.davidotek.pupgui2.desktop} ~/.local/share/applications/
 	else
 		echo "Finishing without installing gtk theme."
 	fi

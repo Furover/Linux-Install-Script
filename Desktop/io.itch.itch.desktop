@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Itch
+Exec=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=itch-run --file-forwarding io.itch.itch @@u %U @@
+Icon=/home/melanie/.icons/Colloid-pink-light/apps/scalable/itch-app.svg
+Terminal=false
+Categories=Game;
+MimeType=x-scheme-handler/itchio;x-scheme-handler/itch;
+X-GNOME-Autostart-enabled=true
+Comment=Install and play itch.io games easily
+X-Flatpak=io.itch.itch

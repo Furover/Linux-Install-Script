@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Android Studio
+GenericName=Android Emulator
+Exec=/home/melanie/android-studio/bin/studio.sh
+Icon=/home/melanie/.local/share/icons/Colloid-pink-light/apps/scalable/android-studio.svg
+Terminal=false
+Type=Application
+Categories=Development
+X-Desktop-File-Install-Version=0.26

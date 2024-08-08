@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Portmaster
+GenericName=Application Firewall
+Exec=/opt/safing/portmaster/portmaster-start app --data=/opt/safing/portmaster
+Icon=/home/melanie/.local/share/icons/Colloid-Pink-Light/apps/scalable/portmaster.svg
+Terminal=false
+Type=Application
+Categories=System
+X-Desktop-File-Install-Version=0.26

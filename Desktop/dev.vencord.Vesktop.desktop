@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Vesktop
+Exec=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=startvesktop dev.vencord.Vesktop
+Terminal=false
+Type=Application
+Icon=/home/melanie/.local/share/icons/Colloid-Pink-Light/apps/scalable/dev.vencord.Vesktop.svg
+StartupWMClass=Vesktop
+X-AppImage-Version=1.5.1
+GenericName=Internet Messenger
+Categories=Network;
+Keywords=discord;vencord;electron;chat;
+X-Desktop-File-Install-Version=0.27
+X-Flatpak=dev.vencord.Vesktop

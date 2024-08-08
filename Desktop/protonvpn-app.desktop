@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Proton VPN
+Exec=protonvpn-app
+Terminal=false
+Type=Application
+Icon=/home/melanie/.icons/Colloid-pink-light/apps/scalable/protonvpn-logo.svg
+StartupWMClass=Protonvpn
+Comment=Proton VPN GUI client
+Categories=Network;
