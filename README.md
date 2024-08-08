@@ -1,5 +1,6 @@
 # Useful commands
-- scrcpy --video-source=camera --camera-id=0 --camera-size=3840x2160 --video-bit-rate=20M --v4l2-sink=/dev/video0 --no-playback
+- sudo modprobe v4l2loopback video_nr=9 card_label=Camera exclusive_caps=1
+- scrcpy --video-source=camera --camera-id=0 --camera-size=3840x2160 --video-bit-rate=20M --v4l2-sink=/dev/video9 --no-playback
 - sudo ufw default deny outgoing
 - sudo ufw allow out on tun0
 - sudo ufw allow out to IP:Range port 0000 proto Protocol
