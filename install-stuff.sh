@@ -177,7 +177,7 @@ askPackages() {
             virtualresponse=$(echo "$virtualresponse" | tr '[:upper:]' '[:lower:]')
 
             if [[ "$virtualresponse" == "yes" || "$virtualresponse" == "y" ]]; then
-                sudo ${MANAGER} --noconfirm -S qemu-full
+                sudo ${MANAGER} --noconfirm -S qemu-full virt-manager
             else
                 echo "Continuing without installing vm stuff..."
             fi
