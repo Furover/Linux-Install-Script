@@ -76,6 +76,9 @@ cd ()
 }
 
 #Start stuff
+if [[ -d ${HOME}/.cargo ]]; then
+	. "$HOME/.cargo/env"
+fi
 eval "$(fzf --bash)"
 eval "$(starship init bash)"
 eval "$(zoxide init bash)"

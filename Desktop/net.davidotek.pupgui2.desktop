@@ -8,6 +8,6 @@ Comment[it]=Installa tool di compatibilità basati su Wine e Proton
 Comment[nl]=Installeer op Wine en Proton gebaseerde compatibiliteitshulpmiddelen
 Comment[pl]=Zainstaluj narzędzia kompatybilności oparte na Wine i Protonie
 Terminal=false
-Icon=/home/melanie/.icons/Colloid-pink-light/apps/scalable/qt.svg
+Icon=/home/melanie/.local/share/icons/Colloid-Pink-Light/apps/scalable/qt.svg
 Categories=Game;Utility;
 X-Flatpak=net.davidotek.pupgui2

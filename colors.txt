@@ -1,0 +1,6 @@
+red: F06173, F27988
+green: 91F061, A2F279
+orange: F08761, F29979
+blue: F06191, F381A8
+purple: F0DD61, F2E279
+turquoise: 61F0BF, 79F2C9

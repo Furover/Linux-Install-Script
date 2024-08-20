@@ -42,15 +42,20 @@
             "detectionMethod": "pci",
             "temp": true,
             "key": "   "
-        },
+        }, /*
         {
             "type": "display",
             "key": "  󱣴 "
-        },
+        },*/
         {
             "type": "memory",
             "key": "   "
         },
+	{
+	    "type": "disk",
+	    "key": "  󰋊 "
+
+	},
         {
             "type": "custom", // HardwareStart
             "format": "" // `\u001b` is `\033`, or `\e`
@@ -65,7 +70,7 @@
         },
         {
             "type": "os",
-            "key": "  󰣇 " // Just get your distro's logo off nerdfonts.com,
+            "key": "   " // Just get your distro's logo off nerdfonts.com,
         },
         {
             "type": "kernel",
